@@ -1,0 +1,148 @@
+@extends($templatePath .'.layouts.index')
+
+@section('seo')
+@include($templatePath .'.layouts.seo', $seo??[] )
+@endsection
+
+@section('body_class', 'user-page')
+@section('content')
+<section class="filmoja-pricing-area my-5">
+   <div class="container">
+      <div class="row justify-content-center">
+         <div class="col-9">
+            <div class="pricing-heading text-center">
+            		<img src="/assets/images/goi-vip.png">
+               	<div class="text-light">Đặc quyền khi mua vip: tạo được danh sách truyện yêu thích, nghe truyện không giới hạn, xem tất cả truyện mới cập nhật. </div>
+            </div>
+         </div>
+      </div>
+      
+
+      <div class="row justify-content-center payment-content">
+         <div class="col-lg-6 mt-5">
+            <div class="box-payment text-light">
+               <div class="mb-2">Bạn đang chọn mua gói: <b>{{ $package->name }}</b></div>
+               <div class="mb-2">Tổng tiền thanh toán: <b>{!! render_price($package->price) !!}</b></div>
+               <h4 class="text-light my-3">Chọn hình thức thanh toán</h4>
+            </div>
+            <form id="paymentCheckout" action="{{ route('payment_point.checkout') }}" method="post">
+               @csrf()
+               <input type="hidden" name="package_id" value="{{ $package->id }}">
+
+               <ul class="list-group list-group-flush list-pay-type">
+                  <li class="list-group-item list-pay-item">
+                     <div class="custom-control custom-radio">
+                        <input type="radio" id="vnpay-qrcode1" name="paypent-type" value="qrcode" class="custom-control-input" checked>
+                        <label class="custom-control-label" for="vnpay-qrcode1">
+                           <img src="{{ asset('assets/images/payment-point/paytype_qr.png') }}" alt="">
+                           Thanh toán quét mã VNPAY
+                        </label>
+                     </div>
+                  </li>
+                  <li class="list-group-item list-pay-item">
+                     <div class="custom-control custom-radio">
+                        <input type="radio" id="vnpay-qrcode2" name="paypent-type" value="atm" class="custom-control-input">
+                        <label class="custom-control-label" for="vnpay-qrcode2">
+                           <img src="{{ asset('assets/images/payment-point/paytype_local_card.png') }}" alt="">
+                           Thanh toán qua thẻ ATM
+                        </label>
+                     </div>
+                  </li>
+               </ul>
+
+               <div class="select-pay-item mb-3 position-relative">
+                  <div class="list-content-loading">
+                         <div class="half-circle-spinner">
+                             <div class="circle circle-1"></div>
+                             <div class="circle circle-2"></div>
+                         </div>
+                     </div>
+                  <div class="select-include">@include($templatePath .'.payment.includes.qrcode')</div>
+                  <div class="text-center mt-4">
+                     <button type="button" class="btn btn-main btn-payment-checkout">Tiếp tục</button>
+                  </div>
+               </div>
+            </form>
+         </div> 
+      </div>
+
+   </div>
+</section>
+
+@endsection
+
+@push('after-footer')
+<script>
+	jQuery(document).ready(function($) {
+      $('.select-package').click(function(){
+         var id = $(this).attr('data');
+         $('.single-pricing-box').removeClass('active');
+         $(this).closest('.single-pricing-box').addClass('active');
+         $('.payment-content').show();
+
+         $('input[name="package_id"]').val(id);
+      });
+
+		var paymentCheckout = $('#paymentCheckout');
+      if(paymentCheckout.length>0){
+         paymentCheckout.validate({
+          onfocusout: false,
+          onkeyup: false,
+          onclick: false,
+          rules: {
+              bank_code: "required",
+              amount: "required",
+          },
+          messages: {
+              bank_code: "Vui lòng chọn hình thức thanh toán",
+              amount: "Vui lòng nhập số tiền bạn muốn nạp",
+          },
+          errorElement : 'div',
+          errorLabelContainer: '.errorTxt',
+          invalidHandler: function(event, validator) {
+              $('html, body').animate({
+                  scrollTop: 0
+              }, 500);
+          }
+      });
+
+      $(document).on('change', 'input[name="paypent-type"]', function(){
+         var val = $(this).val();
+         
+         axios({
+            method: 'get',
+            url: '/payment-type?type='+val,
+         }).then(res => {
+            if(res.data.view != '')
+               $('.select-include').html(res.data.view);
+         }).catch(e => console.log(e));
+      });
+
+      $('input[name="amount"]').on('input', function(){
+        $(this).val(POTENZA.number_format($(this).val()))
+      })
+      
+      $('.btn-payment-checkout').click(function(){
+        if(paymentCheckout.valid()){
+          var bank_code = '';
+          var bank_code_list = $('.select-include').find('input[type="radio"]');
+          if(bank_code_list.length > 0)
+           bank_code = $("input[type='radio'][name='bank_code']:checked").val();
+            else
+              bank_code = $('input[name="bank_code"]').val('');
+
+            if(bank_code)
+              paymentCheckout.submit();
+            else{
+              $('html,body').animate({
+                  scrollTop: $(".select-include").offset().top
+              }, 'slow');
+            }
+         
+          
+        }
+      })
+    }
+	});
+</script>
+@endpush

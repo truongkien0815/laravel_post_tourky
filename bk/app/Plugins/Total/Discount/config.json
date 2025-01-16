@@ -1,0 +1,11 @@
+{
+    "name": "Discount module",
+    "image": "images/discount.jpg",
+    "auth": "huunamtn",
+    "email": "huunamtn@gmail.com",
+    "link": "#",
+    "configGroup": "Plugins",
+    "configCode": "Total",
+    "configKey": "Discount",
+    "version": "1.0"
+}

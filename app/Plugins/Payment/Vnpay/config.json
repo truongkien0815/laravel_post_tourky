@@ -1,0 +1,11 @@
+{
+    "name": "Vnpay module",
+    "image": "images/vnpay.png",
+    "auth": "Naruto",
+    "email": "lanhktc@gmail.com",
+    "link": "https://vnpay.vn/",
+    "configGroup": "Plugins",
+    "configCode": "Payment",
+    "configKey": "Vnpay",
+    "version": "6.0"
+}
