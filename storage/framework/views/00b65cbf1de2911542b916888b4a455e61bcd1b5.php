@@ -1,0 +1,37 @@
+<?php
+    $status = $status ?? 1;
+    $created_at = $created_at??date('Y-m-d H:i');
+    $created_at = date('Y-m-d H:i', strtotime($created_at));
+?>
+<div class="card">
+    <div class="card-header">
+        <h5>Publish</h5>
+    </div> <!-- /.card-header -->
+    <div class="card-body">
+        <div class="form-group">
+            <label>Ngày đăng:</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                </div>
+                <input type='text' class="form-control" name="created_at" id='created_at' value="<?php echo e($created_at); ?>" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <div class="icheck-primary d-inline">
+                <input type="radio" id="radioDraft" name="status" value="0" <?php echo e($status == 0 ? 'checked' : ''); ?>>
+                <label for="radioDraft">Draft</label>
+            </div>
+            <div class="icheck-primary d-inline" style="margin-left: 15px;">
+                <input type="radio" id="radioPublic" name="status" value="1" <?php echo e($status == 1 ? 'checked' : ''); ?> >
+                <label for="radioPublic">Public</label>
+            </div>
+        </div>
+        
+        <div class="form-group text-right">
+            <button type="submit" name="submit" value="save" class="btn btn-info">Save</button>
+            <button type="submit" name="submit" value="apply" class="btn btn-success">Save & Edit</button>
+        </div>
+    </div> <!-- /.card-body -->
+</div><!-- /.card -->
+<?php /**PATH D:\laragon\www\congnghiepnew\resources\views/admin/partials/action_button.blade.php ENDPATH**/ ?>

@@ -1,0 +1,1 @@
+<meta http-equiv="refresh" content="0; url=<?php echo e(url()->current()); ?>"><?php /**PATH D:\laragon\www\congnghiepnew\resources\views/errors/419.blade.php ENDPATH**/ ?>
